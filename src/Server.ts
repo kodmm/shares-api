@@ -10,10 +10,9 @@ import 'express-async-errors';
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
 
+
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
-
-
 
 /************************************************************************************
  *                              Set basic express settings
@@ -44,6 +43,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
         error: err.message,
     });
 });
+
 
 
 

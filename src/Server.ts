@@ -9,7 +9,7 @@ import 'express-async-errors';
 
 import BaseRouter from './routes/api/v1/index';
 import logger from '@shared/Logger';
-
+import cors from 'cors';
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -32,6 +32,8 @@ if (process.env.NODE_ENV === 'production') {
     app.use(helmet());
 }
 
+// Setting Cors
+app.use(cors())
 // Add APIs
 app.use('/api/v1', BaseRouter);
 

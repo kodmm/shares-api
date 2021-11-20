@@ -57,7 +57,7 @@ export const getTvDetail = async(req: Request, res: Response) => {
     await axios.get(urlCrd)
         .then(response => resCredits = response.data)
     console.log(resCredits);
-    return res.json({ data: { data, credits: resCredits, baseUrl: baseUrl + imgWidth } });
+    return res.json({ data: { resDetail, credits: resCredits, baseUrl: baseUrl + imgWidth } });
 }
 
 

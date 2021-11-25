@@ -2,7 +2,8 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
 import helmet from 'helmet';
-
+import { createServer } from "http";
+import { Server } from "socket.io";
 import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
@@ -11,6 +12,7 @@ import BaseRouter from './routes/api/v1/index';
 import logger from '@shared/Logger';
 import cors from 'cors';
 
+import { chatSocket } from './websocket/chat';
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
 
@@ -61,5 +63,24 @@ app.get('*', (req: Request, res: Response) => {
     res.sendFile('index.html', {root: viewsDir});
 });
 
+
+
+// createhttpServer
+const httpServer = createServer(app);
+
+
+//connection Socket.io
+const io: Server = new Server(httpServer, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
+    }
+});
+
+chatSocket(io);
+    
+
+
+
 // Export express instance
-export default app;
+export { httpServer };

@@ -14,14 +14,15 @@ export const chatSocket = (io: Server) => {
     const chat = io.of('/chat').on('connection', (socket: Socket) => {
         console.log('connection15');
         socket.on('client_to_server_join', (data: { room: string}) => {
-            room = data.room;
+            room =  "tv_" + data.room;
             console.log(room);
-            socket.join("tv_" + room);
+            socket.join(room);
         });
         
         // Frontにデータを送信する
         socket.on('client_to_server', (data: { message: string}) => {
-            chat.to(room).emit('server_to_client', {value: data.message});
+            console.log(data);
+            chat.to(room).emit('server_to_client', {message: data.message});
         });
 
         // Frontにデータを送信する(送信元以外)

@@ -54,6 +54,7 @@ export const getTvDetail = async(req: Request, res: Response) => {
     await axios.get(url)
         .then(response => resDetail = response.data);
     
+    // 番組名と概要を日本語に変換
     resDetail = await transInfo(resDetail, id)
 
     // creditsを使用して出演者を取得
@@ -82,7 +83,6 @@ export const getTvDetail = async(req: Request, res: Response) => {
 // }
 
 // Get Translations, name, overview
-
 const transInfo = async(tvDetail: IDetail, id: string) => {
     const url: string = `https://api.themoviedb.org/3/tv/${id}/translations?api_key=${process.env.TMDB_API_KEY}`
     const isoCodeJP: string = "JP";

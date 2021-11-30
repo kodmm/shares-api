@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { Request, Response } from 'express';
 import axios from "axios";
 import logger from "@shared/Logger";
+import { IDetail, ICredit, ITvTranslation, ITranslation } from "@entities/tvs/Tv";
 // import Tv from '@entities/searches/Tv';
 /**
  * Get any tv
@@ -43,7 +44,9 @@ export const getTvDetail = async(req: Request, res: Response) => {
     const baseUrl: string = "https://image.tmdb.org/t/p";
     const imgWidth: string = "/w500";
 
-    let resDetail, resCredits, data: any = null;
+    let data: any = null;
+    let resDetail!: IDetail;
+    let resCredits!: ICredit;
     let resOverviews: any;
 
     //Tvの詳細データを取得
@@ -51,12 +54,13 @@ export const getTvDetail = async(req: Request, res: Response) => {
     await axios.get(url)
         .then(response => resDetail = response.data);
     
+    resDetail = await transInfo(resDetail, id)
 
     // creditsを使用して出演者を取得
     const urlCrd = `https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.TMDB_API_KEY}&language=ja-JP`;
     await axios.get(urlCrd)
         .then(response => resCredits = response.data)
-    console.log(resCredits);
+    console.log("++++++++++++++++++++++++++++++++")
     return res.json({ data: { resDetail, credits: resCredits, baseUrl: baseUrl + imgWidth } });
 }
 
@@ -77,3 +81,20 @@ export const getTvDetail = async(req: Request, res: Response) => {
 //     return data;
 // }
 
+// Get Translations, name, overview
+
+const transInfo = async(tvDetail: IDetail, id: string) => {
+    const url: string = `https://api.themoviedb.org/3/tv/${id}/translations?api_key=${process.env.TMDB_API_KEY}`
+    const isoCodeJP: string = "JP";
+    let translation!: ITvTranslation;
+    await axios.get(url)
+        .then(response => translation = response.data)
+
+    const translationJa: ITranslation[] = translation.translations.filter(translation => translation.iso_3166_1 == isoCodeJP)
+    if (translationJa.length > 0) {
+        tvDetail.name = translationJa[0].data.name
+        tvDetail.overview = translationJa[0].data.overview
+        return tvDetail
+    }
+    return tvDetail
+}

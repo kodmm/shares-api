@@ -3,10 +3,12 @@ import { Request, Response } from 'express';
 
 import { getAnyTv, getTvDetail } from './Tv';
 import passport from '../../../auth/passportTwitterSSO';
+import { isAuth } from './Auth';
 
 
 // Auth-route
 const authRouter: Router = Router();
+authRouter.get('/', isAuth)
 authRouter.get('/twitter', passport.authenticate('twitter'));
 authRouter.get('/twitter/callback', passport.authenticate('twitter', {
     failureRedirect: 'http://localhost:3000/login',

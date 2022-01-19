@@ -34,3 +34,8 @@ export const authCallback = (req: Request, res: Response, next: NextFunction) =>
     }
 }
 
+export const isAuth = (req: Request, res: Response, next: NextFunction) => {
+    console.log("req.session", req.session)
+    console.log("req.cookie", req.cookies)
+    res.json({ data: "data"})
+}

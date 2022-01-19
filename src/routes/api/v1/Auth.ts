@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
-import passport from 'passport';
+import { NextFunction, Request, Response } from 'express';
+
+import passport from '../../../auth/passportTwitterSSO';
 
 
 /**
@@ -8,7 +9,7 @@ import passport from 'passport';
  * @param res 
  */
 export const authLogin = async(req: Request, res: Response) => {
-    passport.authenticate('twitter')
+    await passport.authenticate('twitter')
 }
 
 /**
@@ -16,16 +17,20 @@ export const authLogin = async(req: Request, res: Response) => {
  * @param req 
  * @param res 
  */
-export const authCallback = async(req: Request, res: Response) => {
+export const authCallback = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('twitter', {
         failureRedirect: 'http://localhost:3000/login',
         session: false,
-    }), (req: Request, res: any) => {
+    }), (req: Request, res: Response) => {
+        console.log("-------")
+        console.log(req.user)
+        console.log("--------------")
         // accesstokenのセット
-        res.cookie('token', res.user.token, {
+        res.cookie('token', req.user, {
             httpOnly: true,
         })
         // redirect
         res.redirect('http://localhost:3000/mypage')
-    } 
+    }
 }
+

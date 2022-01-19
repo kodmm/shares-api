@@ -1,10 +1,27 @@
 import { Router } from 'express';
+import { Request, Response } from 'express';
+
 import { getAnyTv, getTvDetail } from './Tv';
-import { authLogin, authCallback } from './Auth';
+import passport from '../../../auth/passportTwitterSSO';
 
 
-
-
+// Auth-route
+const authRouter: Router = Router();
+authRouter.get('/twitter', passport.authenticate('twitter'));
+authRouter.get('/twitter/callback', passport.authenticate('twitter', {
+    failureRedirect: 'http://localhost:3000/login',
+    session: false,
+}), (req: Request, res: Response) => {
+    console.log("-------")
+    console.log(req.user)
+    console.log("--------------")
+    // accesstokenのセット
+    res.cookie('token', req.user, {
+        httpOnly: true,
+    })
+    // redirect
+    res.redirect('http://localhost:3000/mypage')
+});
 
 // Tv-route
 const tvRouter: Router = Router();
@@ -12,10 +29,7 @@ tvRouter.get('/search', getAnyTv);
 tvRouter.get('/:id', getTvDetail);
 // tvRouter.get('/:id/:roomId',)
 
-// Auth-route
-const authRouter: Router = Router();
-authRouter.get('/twitter', authLogin);
-authRouter.get('/twitter/callback', authCallback);
+
 
 // Export the base-router
 const baseRouter = Router();

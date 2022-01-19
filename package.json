@@ -60,9 +60,11 @@
     "build.ts"
   ],
   "dependencies": {
+    "@types/cookie-session": "^2.0.44",
     "axios": "^0.24.0",
     "command-line-args": "^5.2.0",
     "cookie-parser": "^1.4.5",
+    "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",

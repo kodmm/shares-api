@@ -50,7 +50,7 @@ export const getTvDetail = async(req: Request, res: Response) => {
     let resOverviews: any;
 
     //Tvの詳細データを取得
-    const url = `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&language=ja-JP&append_to_response=videos,images`;
+    const url = `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images`;
     await axios.get(url)
         .then(response => resDetail = response.data);
     

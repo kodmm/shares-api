@@ -1,17 +1,16 @@
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import path from 'path';
 import helmet from 'helmet';
 import { createServer } from "http";
 import { Server } from "socket.io";
 import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
-
+import passport from 'passport';
 import BaseRouter from './routes/api/v1/index';
 import logger from '@shared/Logger';
 import cors from 'cors';
-
+import cookieSession from 'cookie-session';
 import { chatSocket } from './websocket/chat';
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -36,9 +35,18 @@ if (process.env.NODE_ENV === 'production') {
 
 // Setting Cors
 app.use(cors())
+
+app.use(
+    cookieSession({
+        maxAge: 24 * 60 * 60 * 1000,
+        keys: ["perfect", "fire"]
+    })
+)
+app.use(passport.initialize());
+
+
 // Add APIs
 app.use('/api/v1', BaseRouter);
-
 // Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -49,19 +57,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 
-
-
-/************************************************************************************
- *                              Serve front-end content
- ***********************************************************************************/
-
-const viewsDir = path.join(__dirname, 'views');
-app.set('views', viewsDir);
-const staticDir = path.join(__dirname, 'public');
-app.use(express.static(staticDir));
-app.get('*', (req: Request, res: Response) => {
-    res.sendFile('index.html', {root: viewsDir});
-});
 
 
 

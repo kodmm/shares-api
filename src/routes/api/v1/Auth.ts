@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import passport from '../../../auth/passportTwitterSSO';
+import passport from '../../../auth/passportSSO';
 
 
 /**

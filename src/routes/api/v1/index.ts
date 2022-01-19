@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Request, Response } from 'express';
 
 import { getAnyTv, getTvDetail } from './Tv';
-import passport from '../../../auth/passportTwitterSSO';
+import passport from '../../../auth/passportSSO';
 import { isAuth } from './Auth';
 
 
@@ -24,6 +24,22 @@ authRouter.get('/twitter/callback', passport.authenticate('twitter', {
     // redirect
     res.redirect('http://localhost:3000/mypage')
 });
+authRouter.get('/google', passport.authenticate('google', {scope: ['profile', 'email']}));
+authRouter.get('/google/callback', passport.authenticate('google', {
+    failureRedirect: 'http://localhost:3000/login',
+    session: false,
+}),(req: Request, res: Response) => {
+    console.log("-------")
+    console.log(req.user)
+    console.log("--------------")
+    // accesstokenのセット
+    res.cookie('token2', req.user, {
+        httpOnly: true,
+    })
+    // redirect
+    res.redirect('http://localhost:3000/mypage')
+}
+)
 
 // Tv-route
 const tvRouter: Router = Router();

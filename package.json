@@ -61,6 +61,7 @@
   ],
   "dependencies": {
     "@types/cookie-session": "^2.0.44",
+    "@types/passport-google-oauth20": "^2.0.11",
     "axios": "^0.24.0",
     "command-line-args": "^5.2.0",
     "cookie-parser": "^1.4.5",
@@ -76,6 +77,7 @@
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
     "passport": "^0.5.2",
+    "passport-google-oauth20": "^2.0.0",
     "passport-oauth": "^1.0.0",
     "passport-twitter": "^1.0.4",
     "reflect-metadata": "^0.1.13",

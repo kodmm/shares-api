@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { getAnyTv, getTvDetail } from './Tv';
 import passport from '../../../auth/passportSSO';
 import { isAuth } from './Auth';
-
+import { sequelize } from '../../../db'
 
 // Auth-route
 const authRouter: Router = Router();

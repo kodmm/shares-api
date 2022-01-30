@@ -1,7 +1,9 @@
 import './pre-start'; // Must be the first import
 import { httpServer } from '@server';
 import logger from '@shared/Logger';
-import { sequelize } from './db';
+
+// @ts-ignore
+import { sequelize } from '../models';
 
 // Start the server
 const port = Number(process.env.PORT || 3001);

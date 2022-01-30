@@ -17,7 +17,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      domain: {
+      photo: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      provider: {
         allowNull: false,
         type: Sequelize.STRING
       },

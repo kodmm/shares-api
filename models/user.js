@@ -32,7 +32,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING,
     },
-    domain: {
+    photo: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: true,
+      }
+    },
+    provider: {
       allowNull: false,
       type: DataTypes.STRING,
     },

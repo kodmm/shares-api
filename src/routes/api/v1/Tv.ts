@@ -44,46 +44,45 @@ export const getTvDetail = async(req: Request, res: Response) => {
     const baseUrl: string = "https://image.tmdb.org/t/p";
     const imgWidth: string = "/w500";
 
-    let data: any = null;
     let resDetail!: IDetail;
     let resCredits!: ICredit;
     let resOverviews: any;
 
     //Tvの詳細データを取得
-    const url = `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images`;
-    await axios.get(url)
-        .then(response => resDetail = response.data);
-    
+    resDetail = await getDetails(id)
+
     // 番組名と概要を日本語に変換
-    resDetail = await transInfo(resDetail, id)
+    resDetail = await getTransInfo(resDetail, id)
 
     // creditsを使用して出演者を取得
-    const urlCrd = `https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.TMDB_API_KEY}&language=ja-JP`;
-    await axios.get(urlCrd)
-        .then(response => resCredits = response.data)
-    console.log("++++++++++++++++++++++++++++++++")
+    resCredits = await getCredits(id)
+
+    // 配信サービスを取得
+    await getStreamingServices(id)
+
     return res.json({ data: { resDetail, credits: resCredits, baseUrl: baseUrl + imgWidth } });
 }
 
-
-// const getStream = async (searchResults: any) => {
+/*
+const getStream = async (searchResults: any) => {
     
-//     let resStream: any;
-//     const isoCode: string = "JP";
-//     const data: any = await searchResults.map(searchResult => {
-//         const id = searchResult.id 
-//         const url = `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
-//         axios.get(url)
-//                 .then(response => resStream = response.data);
-//         console.log(resStream.isoCode);
-//         searchResult.stream = searchResult.isoCode
-//         return searchResult
-//     })
-//     return data;
-// }
+    let resStream: any;
+    const isoCode: string = "JP";
+    const data: any = await searchResults.map(searchResult => {
+        const id = searchResult.id 
+        const url = `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
+        axios.get(url)
+                .then(response => resStream = response.data);
+        console.log(resStream.isoCode);
+        searchResult.stream = searchResult.isoCode
+        return searchResult
+    })
+    return data;
+}
+*/
 
 // Get Translations, name, overview
-const transInfo = async(tvDetail: IDetail, id: string) => {
+const getTransInfo = async(tvDetail: IDetail, id: string) => {
     const url: string = `https://api.themoviedb.org/3/tv/${id}/translations?api_key=${process.env.TMDB_API_KEY}`
     const isoCodeJP: string = "JP";
     let translation!: ITvTranslation;
@@ -97,4 +96,32 @@ const transInfo = async(tvDetail: IDetail, id: string) => {
         return tvDetail
     }
     return tvDetail
+}
+
+// get streaming services
+const getStreamingServices = async(id: string) => {
+    const url: string = `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
+    let data, dataJP: any;
+    await axios.get(url)
+        .then(response => data = response.data)
+    dataJP = JSON.parse(data)
+    console.log(dataJP)
+}
+
+// get tv details
+const getDetails = async(id: string) => {
+    let resDetail!: IDetail;
+    const url: string = `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images`;
+    await axios.get(url)
+        .then(response => resDetail = response.data);
+    return resDetail
+}
+
+// get credits
+const getCredits = async(id: string) => {
+    let resCredits!: ICredit;
+    const urlCrd: string = `https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.TMDB_API_KEY}&language=ja-JP`;
+    await axios.get(urlCrd)
+        .then(response => resCredits = response.data)
+    return resCredits
 }

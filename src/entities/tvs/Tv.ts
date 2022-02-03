@@ -169,3 +169,22 @@ export interface ITranslationData {
     overview: string;
     homepage: string;
 }
+
+export interface IStreamingService {
+    id: string;
+    results: { [key: string]: IStreamingServiceData }
+}
+
+export interface IStreamingServiceData {
+    link: string;
+    rent: Array<IStreamingServiceDetail>;
+    flatrate: Array<IStreamingServiceDetail>;
+    buy: IStreamingServiceDetail[];
+}
+
+export interface IStreamingServiceDetail {
+    display_priority: number;
+    logo_path: string;
+    provider_id: number;
+    provider_name: string;
+}

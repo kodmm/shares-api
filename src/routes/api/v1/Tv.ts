@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { Request, Response } from 'express';
 import axios from "axios";
 import logger from "@shared/Logger";
-import { IDetail, ICredit, ITvTranslation, ITranslation } from "@entities/tvs/Tv";
+import { IDetail, ICredit, ITvTranslation, ITranslation, IStreamingService, IStreamingServiceData } from "@entities/tvs/Tv";
 // import Tv from '@entities/searches/Tv';
 /**
  * Get any tv
@@ -45,7 +45,6 @@ export const getTvDetail = async(req: Request, res: Response) => {
     const imgWidth: string = "/w500";
 
     let resDetail!: IDetail;
-    let resCredits!: ICredit;
     let resOverviews: any;
 
     //Tvの詳細データを取得
@@ -55,12 +54,12 @@ export const getTvDetail = async(req: Request, res: Response) => {
     resDetail = await getTransInfo(resDetail, id)
 
     // creditsを使用して出演者を取得
-    resCredits = await getCredits(id)
+    const resCredits: ICredit = await getCredits(id)
 
     // 配信サービスを取得
-    await getStreamingServices(id)
+    const resStreaming: IStreamingServiceData = await getStreamingServices(id)
 
-    return res.json({ data: { resDetail, credits: resCredits, baseUrl: baseUrl + imgWidth } });
+    return res.json({ data: { resDetail, credits: resCredits, streaming: resStreaming, baseUrl: baseUrl + imgWidth } });
 }
 
 /*
@@ -101,11 +100,13 @@ const getTransInfo = async(tvDetail: IDetail, id: string) => {
 // get streaming services
 const getStreamingServices = async(id: string) => {
     const url: string = `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
-    let data, dataJP: any;
+    let data!: IStreamingService;
+    let dataJP: IStreamingServiceData;
     await axios.get(url)
         .then(response => data = response.data)
-    dataJP = JSON.parse(data)
-    console.log(dataJP)
+    dataJP = data.results.JP
+    
+    return dataJP
 }
 
 // get tv details

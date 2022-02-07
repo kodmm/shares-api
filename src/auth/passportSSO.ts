@@ -15,13 +15,12 @@ passport.use(new TwitterStrategy({
 
     const [user, created] = await findOrCreateUser(profile, token)
 
-    console.log(user.toJSON())
-
     done(null, { 
         displayName: profile.displayName, 
         email: profile.emails[0].value, 
         photo: profile.photos[0].value,
         provider: profile.provider,
+        token: token
     })
 
 }
@@ -35,10 +34,6 @@ passport.use(new GoogleStrategy({
 },async (token: any, tokenSecret: any, profile: any, done: any) => {
     // dbへ登録処理(find or create)
     const [user, created] = await findOrCreateUser(profile, token)
-    console.log("--------", created)
-    console.log("token:", token)
-    console.log("tokenSecret:", tokenSecret)
-    console.log("profile:", profile)
     done(null, { ...profile, token: token })
 }))
 

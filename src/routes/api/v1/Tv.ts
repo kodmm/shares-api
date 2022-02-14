@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes";
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import axios from "axios";
 import logger from "@shared/Logger";
-import { IDetail, ICredit, ITvTranslation, ITranslation, IStreamingService, IStreamingServiceData } from "@entities/tvs/Tv";
+import type { IDetail, ICredit, ITvTranslation, ITranslation, IStreamingService, IStreamingServiceData } from "@entities/tvs/Tv";
 // import Tv from '@entities/searches/Tv';
 /**
  * Get any tv

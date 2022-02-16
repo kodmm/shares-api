@@ -39,3 +39,8 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     console.log("req.cookie", req.cookies)
     res.json({ data: "data"})
 }
+
+export const logout = (req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie('id')
+    res.json({ data: { isAuth: false }})
+}

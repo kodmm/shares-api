@@ -34,7 +34,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Setting Cors
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "DELETE"],
+    credentials: true,
+}))
 
 app.use(
     cookieSession({
@@ -68,7 +72,7 @@ const httpServer = createServer(app);
 const io: Server = new Server(httpServer, {
     cors: {
         origin: "http://localhost:3000",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
     }
 });
 

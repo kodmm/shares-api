@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { createSolutionBuilderWithWatch } = require('typescript');
 module.exports = (sequelize, DataTypes) => {
   class Watch extends Model {
     /**
@@ -11,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Watch.belongsTo(models.User);
+      Watch.belongsTo(models.Video);
     }
   }
   Watch.init({
@@ -30,5 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Watch',
   });
+  
+
   return Watch;
 };

@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
     video_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    genreName: {
+      type: DataTypes.ENUM,
+      values: ['MOVIE', 'TV']
     }
   }, {
     sequelize,

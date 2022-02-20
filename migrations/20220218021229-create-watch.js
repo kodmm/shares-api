@@ -20,6 +20,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
+      genreName: {
+        type: Sequelize.ENUM,
+        values: ['MOVIE', 'TV'],
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

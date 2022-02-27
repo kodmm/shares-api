@@ -1,8 +1,10 @@
 import { StatusCodes } from "http-status-codes";
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import axios from "axios";
 import logger from "@shared/Logger";
 import type { IDetail, ICredit, ITvTranslation, ITranslation, IStreamingService, IStreamingServiceData } from "@entities/tvs/Tv";
+import { IUser } from "@entities/users/User";
+import { findIsWatch } from './Watch';
 // import Tv from '@entities/searches/Tv';
 /**
  * Get any tv
@@ -39,6 +41,8 @@ export const getAnyTv = async(req: Request, res: Response) => {
  * @returns
  */
 export const getTvDetail = async(req: Request, res: Response) => {
+    const user: IUser | null = res.locals.authUser
+
     const id = req.params.id;
     //baseUrl
     const baseUrl: string = "https://image.tmdb.org/t/p";
@@ -56,29 +60,21 @@ export const getTvDetail = async(req: Request, res: Response) => {
     // creditsを使用して出演者を取得
     const resCredits: ICredit = await getCredits(id)
 
+    return res.json({ data: { resDetail, credits: resCredits, baseUrl: baseUrl + imgWidth } });
+}
+
+export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next: NextFunction) => {
+    const user: IUser = res.locals.authUser
+    const id: number = Number(req.params.id)
     // 配信サービスを取得
     const resStreaming: IStreamingServiceData = await getStreamingServices(id)
 
-    return res.json({ data: { resDetail, credits: resCredits, streaming: resStreaming, baseUrl: baseUrl + imgWidth } });
-}
+    // Watchリストに入っているか否か
+    const userIsWatch: boolean | null = user? await findIsWatch(user.id, id): null
 
-/*
-const getStream = async (searchResults: any) => {
-    
-    let resStream: any;
-    const isoCode: string = "JP";
-    const data: any = await searchResults.map(searchResult => {
-        const id = searchResult.id 
-        const url = `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
-        axios.get(url)
-                .then(response => resStream = response.data);
-        console.log(resStream.isoCode);
-        searchResult.stream = searchResult.isoCode
-        return searchResult
-    })
-    return data;
+    console.log(userIsWatch)
+    res.json({ data: { streaming: resStreaming, isWatch: userIsWatch }})
 }
-*/
 
 // Get Translations, name, overview
 const getTransInfo = async(tvDetail: IDetail, id: string) => {
@@ -98,7 +94,7 @@ const getTransInfo = async(tvDetail: IDetail, id: string) => {
 }
 
 // get streaming services
-const getStreamingServices = async(id: string) => {
+const getStreamingServices = async(id: number) => {
     const url: string = `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
     let data!: IStreamingService;
     let dataJP: IStreamingServiceData;

@@ -11,10 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Actor.belongsToMany(models.Video, { through: models.ActorVideo, foreignKey: 'video_id' })
+      Actor.belongsToMany(models.Video, { through: models.ActorVideo, foreignKey: 'actor_id' })
     }
   }
   Actor.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

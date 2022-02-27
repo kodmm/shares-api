@@ -23,7 +23,8 @@ module.exports = {
       },
       provider: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.ENUM,
+        values: ['google', 'twitter'],
       },
       accessToken: {
         allowNull: false,

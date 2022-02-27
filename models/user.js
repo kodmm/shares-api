@@ -44,7 +44,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     provider: {
       allowNull: false,
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM,
+      values: ['google', 'twitter'],
     },
     accessToken:  {
       allowNull: false,

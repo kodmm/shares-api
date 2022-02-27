@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 
-import { getAnyTv, getTvDetail } from './Tv';
+import { getAnyTv, getTvDetail, getTvStreamingUserIsWatch } from './Tv';
 import { getMyData } from './Mypage';
 import passport from '../../../auth/passportSSO';
 import { isAuth, logout } from './Auth';
+import { postWatch,  getWatches, destroyWatch } from './Watch';
 
 // Auth-route
 const authRouter: Router = Router();
@@ -39,16 +40,22 @@ authRouter.get('/google/callback', passport.authenticate('google', {
 // Tv-route
 const tvRouter: Router = Router();
 tvRouter.get('/search', getAnyTv);
-tvRouter.get('/:id', getTvDetail);
-// tvRouter.get('/:id/:roomId',)
+tvRouter.get('/:id',getTvDetail);
+tvRouter.get('/streaming/:id/iswatch',isAuth, getTvStreamingUserIsWatch);
 
 // MyData-route
 const myDataRouter: Router = Router();
-myDataRouter.get('/', getMyData);
+myDataRouter.get('/', isAuth, getMyData);
+
+
+const watchRouter: Router = Router();
+watchRouter.post('/', isAuth, postWatch);
+watchRouter.delete('/:id', isAuth, destroyWatch);
 
 // Export the base-router
 const baseRouter = Router();
 baseRouter.use('/tv', tvRouter);
 baseRouter.use('/auth',authRouter);
 baseRouter.use('/mypage', myDataRouter);
+baseRouter.use('/watch', watchRouter);
 export default baseRouter

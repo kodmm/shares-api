@@ -1,46 +1,37 @@
 import { NextFunction, Request, Response } from 'express';
-
 import passport from '../../../auth/passportSSO';
 
+// @ts-ignore
+import db from '../../../../models';
+import { IUser } from '@entities/users/User';
+
 
 /**
  * 
  * @param req 
  * @param res 
+ * @param next 
  */
-export const authLogin = async(req: Request, res: Response) => {
-    await passport.authenticate('twitter')
-}
+export const isAuth = async(req: Request, res: Response, next: NextFunction) => {
+    const userId: string | undefined = req.cookies.id? req.cookies.id : req.query.id
 
-/**
- * 
- * @param req 
- * @param res 
- */
-export const authCallback = (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('twitter', {
-        failureRedirect: 'http://localhost:3000/login',
-        session: false,
-    }), (req: Request, res: Response) => {
-        console.log("-------")
-        console.log(req.user)
-        console.log("--------------")
-        // accesstokenのセット
-        res.cookie('token', req.user, {
-            httpOnly: true,
-        })
-        // redirect
-        res.redirect('http://localhost:3000/mypage')
+    if (userId) {
+        const user: IUser | null = await findUser(userId)
+
+        res.locals.authUser  = user
+    } else {
+        res.locals.authUser = null
     }
-}
 
-export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-    console.log("req.session", req.session)
-    console.log("req.cookie", req.cookies)
-    res.json({ data: "data"})
+    next()
 }
 
 export const logout = (req: Request, res: Response, next: NextFunction) => {
     res.clearCookie('id')
     res.json({ data: { isAuth: false }})
+}
+
+const findUser = async(id: string) => {
+    const user: IUser | null = await db.User.findByPk(id)
+    return user
 }

@@ -5,14 +5,9 @@ import type { Request, Response } from 'express';
 import db from '../../../../models'
 
 export const getMyData = async(req: Request, res: Response) => {
-    const query: any = req.query;
-    const id: string = query.id;
+    const authUser: any = res.locals.authUser
 
-
-    const user: object = await findByPkUser(id)
-    
-
-    return res.json({ data: user })
+    return res.json({ data: { user: authUser  } })
 }
 
 const findByPkUser = async (id: string) => {

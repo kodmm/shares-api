@@ -12,8 +12,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Watch.belongsTo(models.User);
-      Watch.belongsTo(models.Video);
+      Watch.belongsTo(models.User, {
+        foreignKey: 'user_id',
+      });
+      Watch.belongsTo(models.Video, {
+        foreignKey: 'video_id',
+      });
     }
   }
   Watch.init({

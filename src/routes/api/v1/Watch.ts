@@ -5,18 +5,21 @@ import { IWatch, IVideo, IActor } from "@entities/watches/Watch";
 // @ts-ignore
 import db from '../../../../models';
 import { Op } from 'sequelize';
+import { IUser } from "@entities/users/User";
 
 // get watches
 export const getWatches = async(req: Request, res: Response) => {
-    console.log(res.locals.authUser.id)
-    const userId: string = "bc6ad056-d2c8-4a5f-a226-1ddfc3bd813b"
+    const userId: string = res.locals.authUser.id
     const watches: any = await findWatches(userId);
+    res.json({ data: { watches: watches }})
 }
 // destroy watch
 export const destroyWatch = async(req: Request, res: Response) => {
     const user: any = res.locals.authUser
     const id: number = Number(req.params.id)
     const watch: IWatch | null = await deleteWatch(user.id, id)
+
+    res.json({ data: { watch: watch }})
 }
 
 export const getVideoIds = async(userId: string) => {
@@ -70,13 +73,12 @@ const findWatches = async (userId: string) => {
 
 // post watches (& actor, video, actorVideo)
 export const postWatch = async(req: Request, res: Response) => {
-    const userId: string = req.cookies.id
+    const authUser: IUser | null = res.locals.authUser
     const reqData: { "watch": IWatch, "video": IVideo, "actors": IActor[] } = req.body
     const { watch, video, actors } = reqData;
 
     let isSuccess: boolean = false;
 
-    const authUser = await findUser(userId)
     if (authUser) {
         // video
         const videoCreated: IVideo = await createVideo(video);
@@ -94,7 +96,7 @@ export const postWatch = async(req: Request, res: Response) => {
         })
 
         // watch
-        const watchCreated: IWatch = await createWatch(watch, userId, videoCreated.id)
+        const watchCreated: IWatch = await createWatch(watch, authUser.id, videoCreated.id)
 
         isSuccess = !isSuccess
     }

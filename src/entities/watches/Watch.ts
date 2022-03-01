@@ -5,37 +5,50 @@ export const genreNameKeys = {
 
 type genreNameKeys = typeof genreNameKeys[keyof typeof genreNameKeys]
 
-export interface IWatch {
-    id: number,
-    user_id: string,
-    video_id: number,
-    isWatch: boolean,
-    genreName: genreNameKeys,
+export interface ITimeStamp {
     createdAt: string,
     updatedAt: string,
 }
 
-export interface IVideo {
+export interface IReferenceKeys {
+    user_id: string,
+    video_id: number,
+}
+
+
+export interface IWatch extends IReferenceKeys, ITimeStamp{
+    id: number,
+    isWatch: boolean,
+    genreName: genreNameKeys,
+    
+}
+export interface IVideo extends ITimeStamp {
     id: number,
     name: string,
     poster_path: string,
     overview: string,
-    createdAt: string,
-    updatedAt: string,
 }
-
-export interface IActor {
+export interface IActor extends ITimeStamp {
     id: number,
     name: string,
     profile_path: string,
-    createdAt: string,
-    updatedAt: string,
+    
 }
-
-export interface IActorVideos {
+export interface IActorVideos extends ITimeStamp {
     id: number,
     video_id: number,
     actor_id: number,
+}
+
+
+export interface IWatchActorsVideos {
+    id: number,
+    isWatch: boolean,
+    genreName: genreNameKeys,
     createdAt: string,
     updatedAt: string,
+    Video: IVideoActors,
+}
+export interface IVideoActors extends IVideo {
+    Actors: {id: number, name: string, profile_path: string}[]
 }

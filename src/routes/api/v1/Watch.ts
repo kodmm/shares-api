@@ -71,6 +71,24 @@ const findWatches = async (userId: string) => {
 
 }
 
+export const findWatchesVideosActors = (userId: string) => {
+    const data: any = db.Watch.findAll({
+        where: { user_id: userId},
+        include: [{
+            model: db.Video,
+            include: [{
+                model: db.Actor,
+                through: {
+                    attributes: [],
+                },
+                attributes: ['id', 'name', 'profile_path'],
+            }],
+        }],
+        attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt'],
+    })
+    return data;
+}
+
 // post watches (& actor, video, actorVideo)
 export const postWatch = async(req: Request, res: Response) => {
     const authUser: IUser | null = res.locals.authUser

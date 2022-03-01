@@ -72,7 +72,6 @@ export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next
     // Watchリストに入っているか否か
     const userIsWatch: boolean | null = user? await findIsWatch(user.id, id): null
 
-    console.log(userIsWatch)
     res.json({ data: { streaming: resStreaming, isWatch: userIsWatch }})
 }
 

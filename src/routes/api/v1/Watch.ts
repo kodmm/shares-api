@@ -50,7 +50,7 @@ export const findIsWatch = async(userId: string, videoId: number) => {
     return isWatch
 }
 
-const findWatches = async (userId: string) => {
+export const findWatches = async (userId: string) => {
     const userWatchVideosActor: any = await db.User.findByPk(userId, {
         include: [{
             model: db.Video,
@@ -59,12 +59,12 @@ const findWatches = async (userId: string) => {
                 through: {
                     attributes: [],
                 },
+                attributes: ['id', 'name', 'profile_path'],
             }],
             through: {
-                attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt']
+                attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt'],
             },
         }],
-        attributes: [],
     });
 
     return userWatchVideosActor

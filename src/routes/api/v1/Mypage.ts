@@ -1,13 +1,18 @@
 import { StatusCodes } from "http-status-codes";
 import type { Request, Response } from 'express';
-
+import { IUser } from '@entities/users/User';
+import { IWatchActorsVideos } from '@entities/watches/Watch'
+import { findWatchesVideosActors } from './Watch';
 // @ts-ignore
 import db from '../../../../models'
 
 export const getMyData = async(req: Request, res: Response) => {
-    const authUser: any = res.locals.authUser
-
-    return res.json({ data: { user: authUser  } })
+    const authUser: IUser | null = res.locals.authUser
+    if (authUser) {
+        const watches: IWatchActorsVideos | null = await findWatchesVideosActors(authUser.id);
+        return res.json({ data: { user: authUser, watches: watches } })
+    }
+    return res.json({ data: { user: null  } })
 }
 
 const findByPkUser = async (id: string) => {

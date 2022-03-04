@@ -133,7 +133,7 @@ const createWatch = async(data: IWatch, userId: string, videoId: number) => {
     const watch: any = await db.Watch.build({...data, user_id: userId, video_id: videoId});
     watch.save();
 
-    return watch
+    return watch.toJSON()
 }
 const deleteWatch = async(userId: string, videoId: number) => {
     const delWatch: IWatch = await db.Watch.destroy({
@@ -149,7 +149,7 @@ const createVideo = async (data: IVideo) => {
     if (video === null) {
         video = await db.Video.create(data)
     }
-    return video
+    return video.toJSON()
 }
 
 const createActorVideos = async(actor_id: number, video_id: number) => {
@@ -162,7 +162,7 @@ const createActorVideos = async(actor_id: number, video_id: number) => {
         actorVideo = await db.ActorVideo.create({ actor_id: actor_id, video_id: video_id})
     }
 
-    return actorVideo
+    return actorVideo.toJSON()
 
 }
 
@@ -171,6 +171,6 @@ const createActor = async(data: IActor) => {
     if (actor === null) {
         actor = await db.Actor.create(data)
     }
-    return actor
+    return actor.toJSON()
 }
 

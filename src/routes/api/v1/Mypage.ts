@@ -26,6 +26,6 @@ export const getMyData = async(req: Request, res: Response) => {
 }
 
 const findByPkUser = async (id: string) => {
-    const user: object = await db.User.findByPk(id);
-    return user
+    const user: any = await db.User.findByPk(id);
+    return user.toJSON()
 }

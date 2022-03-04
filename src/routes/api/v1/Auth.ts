@@ -32,6 +32,6 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
 }
 
 const findUser = async(id: string) => {
-    const user: IUser | null = await db.User.findByPk(id)
-    return user
+    const user: any = await db.User.findByPk(id)
+    return user.toJSON()
 }

@@ -20,13 +20,11 @@ export const getAnyTv = async(req: Request, res: Response) => {
     const baseImgUrl: string = "https://image.tmdb.org/t/p";
     const imgWidth: string = "/w500";
 
-    let resSearchTv, data;
     // 1. SearchでTvIDを取得
     const url = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_API_KEY}&language=ja-JP&query=${query}`;
     const enUrl = encodeURI(url);
-    await axios.get(enUrl)
-        .then(response => resSearchTv = response.data);
-    console.log(resSearchTv);
+    const resSearchTv: any = await axios.get(enUrl)
+                                .then(response => response.data);
 
     // // 2.provider
     // data = getStream(resSearchTv.results)
@@ -93,13 +91,11 @@ const getTransInfo = async(tvDetail: IDetail, id: string) => {
 }
 
 // get streaming services
-const getStreamingServices = async(id: number) => {
+export const getStreamingServices = async(id: number) => {
     const url: string = `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
-    let data!: IStreamingService;
-    let dataJP: IStreamingServiceData;
-    await axios.get(url)
-        .then(response => data = response.data)
-    dataJP = data.results.JP
+    const data: IStreamingService = await axios.get(url)
+        .then(response => response.data)
+    const dataJP: IStreamingServiceData = data.results.JP
     
     return dataJP
 }

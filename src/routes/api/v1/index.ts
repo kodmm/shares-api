@@ -5,7 +5,7 @@ import { getAnyTv, getTvDetail, getTvStreamingUserIsWatch } from './Tv';
 import { getMyData } from './Mypage';
 import passport from '../../../auth/passportSSO';
 import { isAuth, logout } from './Auth';
-import { postWatch,  getWatches, destroyWatch } from './Watch';
+import { postWatch,  getWatches, destroyWatch, updateWatch } from './Watch';
 
 // Auth-route
 const authRouter: Router = Router();
@@ -50,6 +50,7 @@ myDataRouter.get('/', isAuth, getMyData);
 
 const watchRouter: Router = Router();
 watchRouter.post('/', isAuth, postWatch);
+watchRouter.patch('/:id', isAuth, updateWatch)
 watchRouter.delete('/:id', isAuth, destroyWatch);
 
 // Export the base-router

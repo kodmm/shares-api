@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import type { Request, Response } from 'express';
 import axios from 'axios';
-import { IWatch, IVideo, IActor } from "@entities/watches/Watch";
+import { IWatch, IVideo, IActor, IWatchData } from "@entities/watches/Watch";
 // @ts-ignore
 import db from '../../../../models';
 import { Op } from 'sequelize';
@@ -20,6 +20,27 @@ export const destroyWatch = async(req: Request, res: Response) => {
     const watch: IWatch | null = await deleteWatch(user.id, id)
 
     res.json({ data: { watch: watch }})
+}
+
+export const updateWatch = async(req: Request, res: Response) => {
+    const user: IUser | null = res.locals.authUser
+    const reqData: { isWatch: boolean } = req.body
+    const watchId: number = Number(req.params.id)
+    const watch: IWatchData = await patchWatch( watchId, reqData)
+    watch.id = watchId
+
+    res.json({ data: {watch: watch} })
+}
+export const patchWatch = async(id: number, data: { isWatch: boolean }) => {
+    const watch: Array<any> = await db.Watch.update(data, {
+        where: {
+            id: id,
+        },
+        returning: true,
+        plain: true,
+    })
+    return watch[1].toJSON()
+    
 }
 
 export const getVideoIds = async(userId: string) => {

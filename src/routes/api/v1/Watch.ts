@@ -88,7 +88,7 @@ export const findWatches = async (userId: string) => {
         }],
     });
 
-    return userWatchVideosActor
+    return userWatchVideosActor.toJSON()
 
 }
 

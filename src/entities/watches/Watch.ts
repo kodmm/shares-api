@@ -1,3 +1,5 @@
+import { IStreamingServiceData } from '@entities/tvs/Tv';
+
 export const genreNameKeys = {
     TV: 'TV',
     MOVIE: 'MOVIE',
@@ -15,6 +17,11 @@ export interface IReferenceKeys {
     video_id: number,
 }
 
+export interface IWatchData extends ITimeStamp {
+    id: number,
+    isWatch: boolean,
+    genreName: genreNameKeys,
+}
 
 export interface IWatch extends IReferenceKeys, ITimeStamp{
     id: number,
@@ -49,6 +56,10 @@ export interface IWatchActorsVideos {
     updatedAt: string,
     Video: IVideoActors,
 }
-export interface IVideoActors extends IVideo {
-    Actors: {id: number, name: string, profile_path: string}[]
+
+export interface IVideoStreaming extends IVideo {
+    streaming: IStreamingServiceData,
+}
+export interface IVideoActors extends IVideoStreaming {
+    Actors: Array<{id: number, name: string, profile_path: string}>
 }

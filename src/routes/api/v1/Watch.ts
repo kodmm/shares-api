@@ -15,10 +15,10 @@ export const getWatches = async(req: Request, res: Response) => {
 }
 // destroy watch
 export const destroyWatch = async(req: Request, res: Response) => {
-    const user: any = res.locals.authUser
+    const user: IUser | null = res.locals.authUser
     const id: number = Number(req.params.id)
-    const watch: IWatch | null = await deleteWatch(user.id, id)
-
+    
+    const watch: number | null = user? await deleteWatch(id) : null
     res.json({ data: { watch: watch }})
 }
 
@@ -156,11 +156,11 @@ const createWatch = async(data: IWatch, userId: string, videoId: number) => {
 
     return watch.toJSON()
 }
-const deleteWatch = async(userId: string, videoId: number) => {
-    const delWatch: IWatch = await db.Watch.destroy({
+const deleteWatch = async(id: number) => {
+    const delWatch: number = await db.Watch.destroy({
         where: {
-            [Op.and]: [{user_id: userId, video_id: videoId}]
-        }
+            id: id,
+        },
     })
     return delWatch
 }

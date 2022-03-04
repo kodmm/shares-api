@@ -92,22 +92,26 @@ export const findWatches = async (userId: string) => {
 
 }
 
-export const findWatchesVideosActors = (userId: string) => {
-    const data: any = db.Watch.findAll({
-        where: { user_id: userId},
+export const findWatchesVideosActors = async(userId: string) => {
+    const data: any = await db.User.findByPk(userId, {
         include: [{
-            model: db.Video,
+            model: db.Watch,
             include: [{
-                model: db.Actor,
-                through: {
-                    attributes: [],
-                },
-                attributes: ['id', 'name', 'profile_path'],
+                model: db.Video,
+                include: [{
+                    model: db.Actor,
+                    throught: {
+                        attributes: [],
+                    },
+                    attributes: ['id', 'name', 'profile_path'],
+                }]
             }],
+            attributes: ['id', 'user_id', 'isWatch', 'video_id', 'genreName', 'createdAt', 'updatedAt']
         }],
-        attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt'],
+        attributes: [],
+
     })
-    return data;
+    return data.toJSON();
 }
 
 // post watches (& actor, video, actorVideo)

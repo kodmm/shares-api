@@ -5,6 +5,7 @@ import logger from "@shared/Logger";
 import type { IDetail, ICredit, ITvTranslation, ITranslation, IStreamingService, IStreamingServiceData } from "@entities/tvs/Tv";
 import { IUser } from "@entities/users/User";
 import { findIsWatch } from './Watch';
+import { IWatchData } from "@entities/watches/Watch";
 // import Tv from '@entities/searches/Tv';
 /**
  * Get any tv
@@ -65,9 +66,9 @@ export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next
     const resStreaming: IStreamingServiceData | undefined = await getStreamingServices(id)
 
     // Watchリストに入っているか否か
-    const userIsWatch: boolean | null = user? await findIsWatch(user.id, id): null
+    const watch: IWatchData | null | undefined = user? await findIsWatch(user.id, id): undefined
 
-    res.json({ data: { streaming: resStreaming, isWatch: userIsWatch }})
+    res.json({ data: { streaming: resStreaming, watch: watch }})
 }
 
 // Get Translations, name, overview

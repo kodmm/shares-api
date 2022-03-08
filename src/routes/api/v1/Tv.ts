@@ -74,9 +74,8 @@ export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next
 const getTransInfo = async(tvDetail: IDetail, id: string) => {
     const url: string = `https://api.themoviedb.org/3/tv/${id}/translations?api_key=${process.env.TMDB_API_KEY}`
     const isoCodeJP: string = "JP";
-    let translation!: ITvTranslation;
-    await axios.get(url)
-        .then(response => translation = response.data)
+    const translation: ITvTranslation = await axios.get(url)
+        .then(response => response.data)
 
     const translationJa: ITranslation[] = translation.translations.filter(translation => translation.iso_3166_1 == isoCodeJP)
     if (translationJa.length > 0) {

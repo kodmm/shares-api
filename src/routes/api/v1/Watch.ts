@@ -58,15 +58,13 @@ export const getVideoIds = async(userId: string) => {
 }
 
 export const findIsWatch = async(userId: string, videoId: number) => {
-    const watch: IWatch = await db.Watch.findOne({
+    const watch: any = (await db.Watch.findOne({
         where: {
             [Op.and]: [{ user_id: userId}, { video_id: videoId }],
-        }
-    })
-    
-    const isWatch: boolean = watch? true : false
-
-    return isWatch
+        },
+        attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt']
+    }))
+    return watch !== null? watch.toJSON() : null
 }
 
 export const findWatches = async (userId: string) => {

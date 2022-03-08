@@ -11,7 +11,7 @@ import db from '../../../../models'
 export const getMyData = async(req: Request, res: Response) => {
     const authUser: IUser | null = res.locals.authUser
     if (authUser) {
-        const watches: { Watches: IWatchActorsVideos[] }| null= await findWatchesVideosActors(authUser.id);
+        const watches: { Watches: IWatchActorsVideos[] }| null = await findWatchesVideosActors(authUser.id);
         if(watches !== null) {
             const resWatches: IWatchActorsVideos[] = await Promise.all(watches.Watches.map(async(watch) => {
                 const streaming: IStreamingServiceData = await getStreamingServices(watch.Video.id)

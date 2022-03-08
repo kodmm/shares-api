@@ -40,7 +40,6 @@ export const patchWatch = async(id: number, data: { isWatch: boolean }) => {
         plain: true,
     })
     return watch[1].toJSON()
-    
 }
 
 export const getVideoIds = async(userId: string) => {
@@ -55,20 +54,17 @@ export const getVideoIds = async(userId: string) => {
         
         attributes: [],
     }) 
-
     return videoIds.Videos;
 }
 
 export const findIsWatch = async(userId: string, videoId: number) => {
-    const watch: IWatch = await db.Watch.findOne({
+    const watch: any = (await db.Watch.findOne({
         where: {
             [Op.and]: [{ user_id: userId}, { video_id: videoId }],
-        }
-    })
-    
-    const isWatch: boolean = watch? true : false
-
-    return isWatch
+        },
+        attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt']
+    }))
+    return watch !== null? watch.toJSON() : null
 }
 
 export const findWatches = async (userId: string) => {
@@ -87,9 +83,7 @@ export const findWatches = async (userId: string) => {
             },
         }],
     });
-
     return userWatchVideosActor.toJSON()
-
 }
 
 export const findWatchesVideosActors = async(userId: string) => {
@@ -106,7 +100,7 @@ export const findWatchesVideosActors = async(userId: string) => {
                     attributes: ['id', 'name', 'profile_path'],
                 }]
             }],
-            attributes: ['id', 'user_id', 'isWatch', 'video_id', 'genreName', 'createdAt', 'updatedAt']
+            attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt']
         }],
         attributes: [],
 
@@ -117,35 +111,28 @@ export const findWatchesVideosActors = async(userId: string) => {
 // post watches (& actor, video, actorVideo)
 export const postWatch = async(req: Request, res: Response) => {
     const authUser: IUser | null = res.locals.authUser
-    const reqData: { "watch": IWatch, "video": IVideo, "actors": IActor[] } = req.body
+    const reqData: { "watch": IWatchData, "video": IVideo, "actors": IActor[] } = req.body
     const { watch, video, actors } = reqData;
-
-    let isSuccess: boolean = false;
 
     if (authUser) {
         // video
         const videoCreated: IVideo = await createVideo(video);
-
         // actor
         const actorsCreated: IActor[] = await Promise.all(actors.map(async(actor) => {
             const actorCreated: IActor = await createActor(actor)
             return actorCreated
         }))
-
         // actorVideos
         actorsCreated.map(actorCreated => {
             createActorVideos(actorCreated.id, videoCreated.id)
 
         })
-
         // watch
-        const watchCreated: IWatch = await createWatch(watch, authUser.id, videoCreated.id)
+        const watchCreated: IWatchData = await createWatch(watch, authUser.id, videoCreated.id)
 
-        isSuccess = !isSuccess
+        return res.json({ data: { watch: watchCreated } })
     }
-    
-    return res.json({ data: { isSuccess: isSuccess } })
-
+    return res.json({ data: { watch: null } })
 }
 
 
@@ -154,11 +141,13 @@ const findUser = async(id: string) => {
     return user
 }
 
-const createWatch = async(data: IWatch, userId: string, videoId: number) => {
+const createWatch = async(data: IWatchData, userId: string, videoId: number) => {
     const watch: any = await db.Watch.build({...data, user_id: userId, video_id: videoId});
-    watch.save();
+    const createdWatch: IWatchData = (await watch.save({
+        attributes: ['id', 'isWatch', 'video_id', 'genreName', 'createdAt', 'updatedAt']
+    })).toJSON();
 
-    return watch.toJSON()
+    return createdWatch
 }
 const deleteWatch = async(id: number) => {
     const delWatch: number = await db.Watch.destroy({
@@ -186,9 +175,7 @@ const createActorVideos = async(actor_id: number, video_id: number) => {
     if (actorVideo === null) {
         actorVideo = await db.ActorVideo.create({ actor_id: actor_id, video_id: video_id})
     }
-
     return actorVideo.toJSON()
-
 }
 
 const createActor = async(data: IActor) => {

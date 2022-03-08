@@ -5,6 +5,7 @@ import logger from "@shared/Logger";
 import type { IDetail, ICredit, ITvTranslation, ITranslation, IStreamingService, IStreamingServiceData } from "@entities/tvs/Tv";
 import { IUser } from "@entities/users/User";
 import { findIsWatch } from './Watch';
+import { IWatchData } from "@entities/watches/Watch";
 // import Tv from '@entities/searches/Tv';
 /**
  * Get any tv
@@ -25,9 +26,6 @@ export const getAnyTv = async(req: Request, res: Response) => {
     const enUrl = encodeURI(url);
     const resSearchTv: any = await axios.get(enUrl)
                                 .then(response => response.data);
-
-    // // 2.provider
-    // data = getStream(resSearchTv.results)
     
     return res.json({ data: {resSearchTv, baseImgUrl: baseImgUrl + imgWidth} });
 }
@@ -47,7 +45,6 @@ export const getTvDetail = async(req: Request, res: Response) => {
     const imgWidth: string = "/w500";
 
     let resDetail!: IDetail;
-    let resOverviews: any;
 
     //Tvの詳細データを取得
     resDetail = await getDetails(id)
@@ -65,25 +62,24 @@ export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next
     const user: IUser = res.locals.authUser
     const id: number = Number(req.params.id)
     // 配信サービスを取得
-    const resStreaming: IStreamingServiceData = await getStreamingServices(id)
+    const resStreaming: IStreamingServiceData | undefined = await getStreamingServices(id)
 
     // Watchリストに入っているか否か
-    const userIsWatch: boolean | null = user? await findIsWatch(user.id, id): null
+    const watch: IWatchData | null | undefined = user? await findIsWatch(user.id, id): undefined
 
-    res.json({ data: { streaming: resStreaming, isWatch: userIsWatch }})
+    res.json({ data: { streaming: resStreaming, watch: watch }})
 }
 
 // Get Translations, name, overview
 const getTransInfo = async(tvDetail: IDetail, id: string) => {
     const url: string = `https://api.themoviedb.org/3/tv/${id}/translations?api_key=${process.env.TMDB_API_KEY}`
     const isoCodeJP: string = "JP";
-    let translation!: ITvTranslation;
-    await axios.get(url)
-        .then(response => translation = response.data)
+    const translation: ITvTranslation = await axios.get(url)
+        .then(response => response.data)
 
     const translationJa: ITranslation[] = translation.translations.filter(translation => translation.iso_3166_1 == isoCodeJP)
     if (translationJa.length > 0) {
-        tvDetail.name = translationJa[0].data.name
+        tvDetail.name = translationJa[0].data.name? translationJa[0].data.name: tvDetail.original_name
         tvDetail.overview = translationJa[0].data.overview
         return tvDetail
     }
@@ -96,7 +92,6 @@ export const getStreamingServices = async(id: number) => {
     const data: IStreamingService = await axios.get(url)
         .then(response => response.data)
     const dataJP: IStreamingServiceData = data.results.JP
-    
     return dataJP
 }
 

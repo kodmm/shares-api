@@ -79,7 +79,7 @@ const getTransInfo = async(tvDetail: IDetail, id: string) => {
 
     const translationJa: ITranslation[] = translation.translations.filter(translation => translation.iso_3166_1 == isoCodeJP)
     if (translationJa.length > 0) {
-        tvDetail.name = translationJa[0].data.name
+        tvDetail.name = translationJa[0].data.name? translationJa[0].data.name: tvDetail.original_name
         tvDetail.overview = translationJa[0].data.overview
         return tvDetail
     }

@@ -62,7 +62,7 @@ export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next
     const user: IUser = res.locals.authUser
     const id: number = Number(req.params.id)
     // 配信サービスを取得
-    const resStreaming: IStreamingServiceData = await getStreamingServices(id)
+    const resStreaming: IStreamingServiceData | undefined = await getStreamingServices(id)
 
     // Watchリストに入っているか否か
     const userIsWatch: boolean | null = user? await findIsWatch(user.id, id): null

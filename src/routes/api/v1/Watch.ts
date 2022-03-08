@@ -141,11 +141,13 @@ const findUser = async(id: string) => {
     return user
 }
 
-const createWatch = async(data: IWatch, userId: string, videoId: number) => {
+const createWatch = async(data: IWatchData, userId: string, videoId: number) => {
     const watch: any = await db.Watch.build({...data, user_id: userId, video_id: videoId});
-    watch.save();
+    const createdWatch: IWatchData = (await watch.save({
+        attributes: ['id', 'isWatch', 'video_id', 'genreName', 'createdAt', 'updatedAt']
+    })).toJSON();
 
-    return watch.toJSON()
+    return createdWatch
 }
 const deleteWatch = async(id: number) => {
     const delWatch: number = await db.Watch.destroy({

@@ -25,9 +25,6 @@ export const getAnyTv = async(req: Request, res: Response) => {
     const enUrl = encodeURI(url);
     const resSearchTv: any = await axios.get(enUrl)
                                 .then(response => response.data);
-
-    // // 2.provider
-    // data = getStream(resSearchTv.results)
     
     return res.json({ data: {resSearchTv, baseImgUrl: baseImgUrl + imgWidth} });
 }

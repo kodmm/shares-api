@@ -45,7 +45,6 @@ export const getTvDetail = async(req: Request, res: Response) => {
     const imgWidth: string = "/w500";
 
     let resDetail!: IDetail;
-    let resOverviews: any;
 
     //Tvの詳細データを取得
     resDetail = await getDetails(id)
@@ -94,7 +93,6 @@ export const getStreamingServices = async(id: number) => {
     const data: IStreamingService = await axios.get(url)
         .then(response => response.data)
     const dataJP: IStreamingServiceData = data.results.JP
-    
     return dataJP
 }
 

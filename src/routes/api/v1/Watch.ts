@@ -100,7 +100,7 @@ export const findWatchesVideosActors = async(userId: string) => {
                     attributes: ['id', 'name', 'profile_path'],
                 }]
             }],
-            attributes: ['id', 'user_id', 'isWatch', 'video_id', 'genreName', 'createdAt', 'updatedAt']
+            attributes: ['id', 'isWatch', 'genreName', 'createdAt', 'updatedAt']
         }],
         attributes: [],
 
@@ -111,7 +111,7 @@ export const findWatchesVideosActors = async(userId: string) => {
 // post watches (& actor, video, actorVideo)
 export const postWatch = async(req: Request, res: Response) => {
     const authUser: IUser | null = res.locals.authUser
-    const reqData: { "watch": IWatch, "video": IVideo, "actors": IActor[] } = req.body
+    const reqData: { "watch": IWatchData, "video": IVideo, "actors": IActor[] } = req.body
     const { watch, video, actors } = reqData;
 
     if (authUser) {
@@ -128,13 +128,11 @@ export const postWatch = async(req: Request, res: Response) => {
 
         })
         // watch
-        const watchCreated: IWatch = await createWatch(watch, authUser.id, videoCreated.id)
+        const watchCreated: IWatchData = await createWatch(watch, authUser.id, videoCreated.id)
 
         return res.json({ data: { watch: watchCreated } })
     }
-    
-    return res.json({ data: { isSuccess: isSuccess } })
-
+    return res.json({ data: { watch: null } })
 }
 
 

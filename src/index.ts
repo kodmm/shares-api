@@ -9,7 +9,6 @@ import { sequelize } from '../models';
 const port = Number(process.env.PORT || 3001);
 httpServer.listen(port, () => {
     logger.info('Express server started on port: ' + port);
-    console.log(process.env.DATABASE_URL)
     // Testing the connection
     try{
         sequelize.authenticate()

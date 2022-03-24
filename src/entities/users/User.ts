@@ -5,7 +5,12 @@ export const providerNameKeys = {
 
 type providerNameKeys = typeof providerNameKeys[keyof typeof providerNameKeys]
 
-export interface IUser {
+interface ITimeStamp {
+    createdAt: string,
+    updatedAt: string,
+}
+
+export interface IUser extends ITimeStamp {
     id: string,
     accessToken: string,
     refreshToken: string,
@@ -13,6 +18,4 @@ export interface IUser {
     email: string,
     photo: string,
     provider: providerNameKeys,
-    createdAt: string,
-    updatedAt: string,
 }

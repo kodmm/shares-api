@@ -19,4 +19,18 @@ interface IMessage {
     message: string,
 }
 
-interface IChat extends IChatData, IReferenceKeys, ITimestamp {} 
+export interface IChat extends IMessage, ITimestamp {
+    id: number,
+} 
+
+export interface IChatData extends IReferenceKeys, IMessage {}
+
+export interface IUser {
+    id: string,
+    displayName: string,
+    photo: string,
+}
+
+export interface IChatUser extends IChat {
+    User: IUser,
+}

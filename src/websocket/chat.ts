@@ -2,14 +2,6 @@ import { IChatData, IChat, IUser } from '@entities/chats/Chat';
 import { Socket, Server } from 'socket.io';
 import { addChat } from 'src/routes/api/v1/Chat';
 export const chatSocket = (io: Server) => {
-    // console.log(socket.id);
-    // console.log("conneted server");
-    
-    // // roomに入室
-    // socket.on('client_to_server_join', (data: { room: string }) => {
-    //     const room: string = data.room;
-    //     socket.join(room);
-    // });
 
     let room: string;
 
@@ -27,11 +19,6 @@ export const chatSocket = (io: Server) => {
             const message: IChat = await addChat(data.chat)
             chat.to(room).emit('server_to_client', {data: { message: message, user: user }});
         });
-
-        // Frontにデータを送信する(送信元以外)
-        // socket.on('client_to_server_broadcast', (data: { message: string}) => {
-        //     socket.broadcast.to(room).emit('server_to_client', {value: data.message})
-        // });
 
         // データを受信し送信元のみに送信
         socket.on('cient_to_server_personal', (data: { name: string}) => {

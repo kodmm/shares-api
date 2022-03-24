@@ -1,3 +1,9 @@
+const messageTypeKeys = {
+    TEXT: 'text',
+} as const 
+type messageTypeKeys = typeof messageTypeKeys[keyof typeof messageTypeKeys]
+
+
 interface ITimestamp {
     createdAt: string,
     updatedAt: string,
@@ -8,13 +14,7 @@ interface IReferenceKeys {
     video_id: number,
 }
 
-const messageTypeKeys = {
-    MESSAGE: 'message',
-} as const 
-type messageTypeKeys = typeof messageTypeKeys[keyof typeof messageTypeKeys]
-
-interface IChatData {
-    id: number,
+interface IMessage {
     messageType: messageTypeKeys,
     message: string,
 }

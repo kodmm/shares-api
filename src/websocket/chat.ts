@@ -9,8 +9,9 @@ export const chatSocket = (io: Server) => {
 
         socket.on('client_to_server_join', ({ data }: { data: { room: string} }) => {
             room =  "tv_" + data.room;
-            console.log(room);
+
             socket.join(room);
+
         });
         
         // Frontにデータを送信する
@@ -32,7 +33,6 @@ export const chatSocket = (io: Server) => {
         socket.on('disconnect', () => {
             const endMessage = "退出しました。";
             chat.to(room).emit('server_to_client', {value: endMessage});
-            console.log("disconnect from client");
         });
         
     });

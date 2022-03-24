@@ -4,8 +4,10 @@ import axios from "axios";
 import logger from "@shared/Logger";
 import type { IDetail, ICredit, ITvTranslation, ITranslation, IStreamingService, IStreamingServiceData } from "@entities/tvs/Tv";
 import { IUser } from "@entities/users/User";
-import { findIsWatch } from './Watch';
+import { findIsWatch, findWatches } from './Watch';
 import { IWatchData } from "@entities/watches/Watch";
+import { IChatUser } from "@entities/chats/Chat";
+import { findTvChats } from "./Chat";
 // import Tv from '@entities/searches/Tv';
 /**
  * Get any tv
@@ -58,7 +60,7 @@ export const getTvDetail = async(req: Request, res: Response) => {
     return res.json({ data: { resDetail, credits: resCredits, baseUrl: baseUrl + imgWidth } });
 }
 
-export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next: NextFunction) => {
+export const getTvStreamingUserIsWatchChat = async(req: Request, res: Response, next: NextFunction) => {
     const user: IUser = res.locals.authUser
     const id: number = Number(req.params.id)
     // 配信サービスを取得
@@ -67,7 +69,9 @@ export const getTvStreamingUserIsWatch = async(req: Request, res: Response, next
     // Watchリストに入っているか否か
     const watch: IWatchData | null | undefined = user? await findIsWatch(user.id, id): undefined
 
-    res.json({ data: { streaming: resStreaming, watch: watch }})
+    // Chatリストを取得
+    const chat: any = await findTvChats(id);
+    res.json({ data: { streaming: resStreaming, watch: watch, user: user, chat: chat }})
 }
 
 // Get Translations, name, overview

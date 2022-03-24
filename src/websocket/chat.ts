@@ -6,8 +6,8 @@ export const chatSocket = (io: Server) => {
     let room: string;
 
     const chat = io.of('/chat').on('connection', (socket: Socket) => {
-        console.log('connection15');
-        socket.on('client_to_server_join', (data: { room: string}) => {
+
+        socket.on('client_to_server_join', ({ data }: { data: { room: string} }) => {
             room =  "tv_" + data.room;
             console.log(room);
             socket.join(room);

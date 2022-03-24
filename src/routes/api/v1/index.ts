@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 
-import { getAnyTv, getTvDetail, getTvStreamingUserIsWatch } from './Tv';
+import { getAnyTv, getTvDetail, getTvStreamingUserIsWatchChat } from './Tv';
 import { getMyData } from './Mypage';
 import passport from '../../../auth/passportSSO';
 import { isAuth, logout } from './Auth';
@@ -41,7 +41,7 @@ authRouter.get('/google/callback', passport.authenticate('google', {
 const tvRouter: Router = Router();
 tvRouter.get('/search', getAnyTv);
 tvRouter.get('/:id',getTvDetail);
-tvRouter.get('/streaming/:id/iswatch',isAuth, getTvStreamingUserIsWatch);
+tvRouter.get('/streaming/:id/iswatch',isAuth, getTvStreamingUserIsWatchChat);
 
 // MyData-route
 const myDataRouter: Router = Router();

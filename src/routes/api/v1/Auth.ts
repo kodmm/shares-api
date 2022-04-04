@@ -26,6 +26,12 @@ export const isAuth = async(req: Request, res: Response, next: NextFunction) => 
     next()
 }
 
+export const getUser = async(req: Request, res: Response) => {
+    const userId: string | undefined = req.cookies.id? req.cookies.id : undefined
+    const user: IUser | null = userId? await findUser(userId): null
+    res.json({ data: {user: user}})
+}
+
 export const logout = (req: Request, res: Response, next: NextFunction) => {
     res.clearCookie('id')
     res.json({ data: { isAuth: false }})

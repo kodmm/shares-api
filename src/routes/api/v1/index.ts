@@ -4,12 +4,12 @@ import type { Request, Response } from 'express';
 import { getAnyTv, getTvDetail, getTvStreamingUserIsWatchChat } from './Tv';
 import { getMyData } from './Mypage';
 import passport from '../../../auth/passportSSO';
-import { isAuth, logout } from './Auth';
+import { isAuth, getUser, logout } from './Auth';
 import { postWatch, destroyWatch, updateWatch } from './Watch';
 
 // Auth-route
 const authRouter: Router = Router();
-authRouter.get('/', isAuth);
+authRouter.get('/', getUser);
 authRouter.delete('/logout', logout);
 authRouter.get('/twitter', passport.authenticate('twitter'));
 authRouter.get('/twitter/callback', passport.authenticate('twitter', {
